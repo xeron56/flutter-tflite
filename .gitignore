@@ -87,3 +87,4 @@ example/object_detection_ssd_mobilenet/assets/models/ssd_mobilenet.tflite
 # FVM Version Cache
 .fvm/
 .fvmrc
+example/easyocr/assets/models
