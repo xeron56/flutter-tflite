@@ -172,18 +172,40 @@ class SixDRepNetService {
     double nmsThreshold = 0.4,
     required Function(double preTime, double detTime, double postTime, double poseTime) onStatsUpdated,
   }) async {
+    final decodeStopwatch = Stopwatch()..start();
+    final img.Image? originalImage = img.decodeImage(imageBytes);
+    decodeStopwatch.stop();
+    final double decodeTime = decodeStopwatch.elapsedMicroseconds / 1000.0;
+
+    if (originalImage == null) {
+      throw ArgumentError('Failed to decode input image.');
+    }
+
+    return estimatePoseFromImage(
+      originalImage,
+      scoreThreshold: scoreThreshold,
+      nmsThreshold: nmsThreshold,
+      onStatsUpdated: (pre, det, post, pose) {
+        onStatsUpdated(pre + decodeTime, det, post, pose);
+      },
+    );
+  }
+
+  /// Pipeline execution on a pre-decoded Image object. Useful for real-time frame streams.
+  Future<List<FacePose>> estimatePoseFromImage(
+    img.Image originalImage, {
+    double scoreThreshold = 0.85,
+    double nmsThreshold = 0.4,
+    required Function(double preTime, double detTime, double postTime, double poseTime) onStatsUpdated,
+  }) async {
     if (!isLoaded) {
       throw StateError('Models are not loaded. Call loadModels first.');
     }
 
     final totalStopwatch = Stopwatch()..start();
 
-    // 1. Decode original image
+    // 1. Resize & Preprocess original image
     final preStopwatch = Stopwatch()..start();
-    final img.Image? originalImage = img.decodeImage(imageBytes);
-    if (originalImage == null) {
-      throw ArgumentError('Failed to decode input image.');
-    }
     final int origW = originalImage.width;
     final int origH = originalImage.height;
 
