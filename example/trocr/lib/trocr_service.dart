@@ -15,8 +15,7 @@ enum HardwareAccelerator {
 class TrocrService {
   Interpreter? _encoder;
   Interpreter? _decoder;
-  final Map<int, String> _vocab = {};
-  final Map<int, int> _unicodeToBytes = {};
+  final List<String> _vocab = [];
 
   HardwareAccelerator _encoderAccelerator = HardwareAccelerator.cpu;
   HardwareAccelerator _decoderAccelerator = HardwareAccelerator.cpu;
@@ -34,34 +33,14 @@ class TrocrService {
   double get decoderTimeMs => _decoderTimeMs;
   int get decodedTokenCount => _decodedTokenCount;
 
-  void _buildUnicodeToBytes() {
-    _unicodeToBytes.clear();
-    final bs = <int>[];
-    for (int i = 33; i <= 126; i++) bs.add(i);
-    for (int i = 161; i <= 172; i++) bs.add(i);
-    for (int i = 174; i <= 255; i++) bs.add(i);
-
-    int n = 0;
-    for (int b = 0; b < 256; b++) {
-      if (bs.contains(b)) {
-        _unicodeToBytes[b] = b;
-      } else {
-        _unicodeToBytes[256 + n] = b;
-        n++;
-      }
-    }
-  }
-
   Future<void> _loadVocab() async {
     if (_vocab.isNotEmpty) return;
     final String jsonStr = await rootBundle.loadString('assets/models/vocab.json');
-    final Map<String, dynamic> rawMap = json.decode(jsonStr) as Map<String, dynamic>;
+    final List<dynamic> rawList = json.decode(jsonStr) as List<dynamic>;
     _vocab.clear();
-    rawMap.forEach((key, value) {
-      if (value is int) {
-        _vocab[value] = key;
-      }
-    });
+    for (final item in rawList) {
+      _vocab.add(item as String);
+    }
   }
 
   Future<void> loadModels({HardwareAccelerator accelerator = HardwareAccelerator.cpu}) async {
@@ -71,7 +50,6 @@ class TrocrService {
     _encoder = null;
     _decoder = null;
 
-    _buildUnicodeToBytes();
     await _loadVocab();
 
     final options = InterpreterOptions();
@@ -136,15 +114,12 @@ class TrocrService {
     required File decoderFile,
     required File vocabFile,
   }) async {
-    _buildUnicodeToBytes();
     final String jsonStr = await vocabFile.readAsString();
-    final Map<String, dynamic> rawMap = json.decode(jsonStr) as Map<String, dynamic>;
+    final List<dynamic> rawList = json.decode(jsonStr) as List<dynamic>;
     _vocab.clear();
-    rawMap.forEach((key, value) {
-      if (value is int) {
-        _vocab[value] = key;
-      }
-    });
+    for (final item in rawList) {
+      _vocab.add(item as String);
+    }
     _encoder = Interpreter.fromBuffer(encoderFile.readAsBytesSync());
     _decoder = Interpreter.fromBuffer(decoderFile.readAsBytesSync());
     _encoderAccelerator = HardwareAccelerator.cpu;
@@ -347,25 +322,16 @@ class TrocrService {
   }
 
   String _decodeTokens(List<int> tokens) {
-    final List<int> byteList = [];
+    final StringBuffer buffer = StringBuffer();
     for (final token in tokens) {
-      final tokenString = _vocab[token];
-      if (tokenString == null) continue;
-      
-      // Convert character string back to raw bytes
-      for (int i = 0; i < tokenString.length; i++) {
-        final code = tokenString.codeUnitAt(i);
-        final byte = _unicodeToBytes[code];
-        if (byte != null) {
-          byteList.add(byte);
+      if (token >= 0 && token < _vocab.length) {
+        final tokenString = _vocab[token];
+        if (tokenString == '<s>' || tokenString == '</s>' || tokenString == '<pad>' || tokenString == '<unk>') {
+          continue;
         }
+        buffer.write(tokenString);
       }
     }
-
-    try {
-      return utf8.decode(byteList, allowMalformed: true).trim();
-    } catch (e) {
-      return '';
-    }
+    return buffer.toString().replaceAll('\u2581', ' ').trim();
   }
 }
