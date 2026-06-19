@@ -88,3 +88,4 @@ example/object_detection_ssd_mobilenet/assets/models/ssd_mobilenet.tflite
 .fvm/
 .fvmrc
 example/easyocr/assets/models
+allmodel

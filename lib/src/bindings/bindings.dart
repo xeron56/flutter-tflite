@@ -29,8 +29,13 @@ final DynamicLibrary _dylib = () {
   }
 
   if (Platform.isMacOS) {
-    return DynamicLibrary.open(
-        '${Directory(Platform.resolvedExecutable).parent.parent.path}/resources/libtensorflowlite_c-mac.dylib');
+    try {
+      return DynamicLibrary.open(
+          '/Users/mdshahidulislam/Documents/resource/flutter-tflite/macos/libtensorflowlite_c-mac.dylib');
+    } catch (e) {
+      return DynamicLibrary.open(
+          '${Directory(Platform.resolvedExecutable).parent.parent.path}/resources/libtensorflowlite_c-mac.dylib');
+    }
   }
 
   if (Platform.isLinux) {
