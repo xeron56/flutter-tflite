@@ -1,0 +1,12 @@
+Indra OCR Android port
+Portions of preprocessing, decoding, orientation, script routing and RTL handling
+are adapted from Datalab Indra, https://github.com/datalab-to/indra
+commit e20355319b5aa5705a876a8d2b40aca606d7df5f, Apache License 2.0.
+Modified to use Kotlin, Android/OpenCV, ONNX Runtime Java, bounded mobile batches,
+and a Flutter UI. This port is not an official Datalab application.
+
+The model weights retain their separate modified OpenRAIL-M license.
+See android/app/src/main/assets/models/LICENSE.
+
+ONNX Runtime: Microsoft, MIT License.
+OpenCV: OpenCV contributors, Apache License 2.0.

@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-25",
+  "mode": "release",
+  "device": "REDMI K90 / 2510DRK44C / SM8750 / Android 16",
+  "sample": "bundled Korean scan, 1653x2337, 35 lines, normal mode",
+  "method": "UI Tune on this image; median of 3 warm runs per candidate after 1 cold session run; USB-connected/charging; sequential candidates",
+  "results": [
+    {
+      "label": "CPU · 1 threads",
+      "medianMs": 1859.396093,
+      "matchesCpuText": true
+    },
+    {
+      "label": "CPU · 2 threads",
+      "medianMs": 1138.547968,
+      "matchesCpuText": true
+    },
+    {
+      "label": "CPU · 4 threads",
+      "medianMs": 749.4,
+      "matchesCpuText": true
+    },
+    {
+      "label": "CPU · 6 threads",
+      "medianMs": 707.407812,
+      "matchesCpuText": true
+    },
+    {
+      "label": "CPU · 8 threads",
+      "medianMs": 652.782343,
+      "matchesCpuText": true
+    },
+    {
+      "label": "XNNPACK · 4 threads + CPU fallback",
+      "medianMs": 1316.98328,
+      "matchesCpuText": true
+    },
+    {
+      "label": "XNNPACK · 6 threads + CPU fallback",
+      "medianMs": 1336.168073,
+      "matchesCpuText": true
+    },
+    {
+      "label": "NNAPI requested + CPU fallback",
+      "medianMs": 754.505156,
+      "matchesCpuText": true
+    }
+  ],
+  "selected": "CPU · 8 threads",
+  "bengaliSampleUiMs": {
+    "firstRun": 368,
+    "warmRun": 146
+  },
+  "apkSha256": "3c299081c5f8ce1ce73d5a838c6e37422f756c636f4dbccd34be88a082bc1eac",
+  "apkBytes": 101748254,
+  "networkPermissions": [],
+  "notes": "NNAPI assignment is not verified; CPU fallback may occur. Release smoke test passed after adding JNI keep rules. Profile tests also passed with complete text equality to original models."
+}

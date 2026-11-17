@@ -1,0 +1,19 @@
+{
+  "version": "1.1.0+2",
+  "device": "REDMI K90 / 2510DRK44C / SM8750",
+  "flutter_analyze": "pass",
+  "flutter_tests": 8,
+  "real_release_ui": {
+    "recognition": "35-line Korean scan",
+    "cold_process_ms": 952,
+    "reader": true,
+    "export_utf8_bytes": 3029,
+    "all_expected_ocr_lines_present": 35,
+    "save_location": "Downloads/indra-document (1).md"
+  },
+  "network_permission": false,
+  "direct_qnn_gpu_htp": false,
+  "functional_validation_apk_sha256": "80f2c97bb8964af74c4dd26a35183f59cad069d21ae053478312ed634d4734b8",
+  "preview_label_update_apk_sha256": "a96ca905ec6f20574395260fa7b18a06b5a963835e944af1f4b1cbd5fc22ba41",
+  "label_update": "Read renamed Preview; formatted view remains default."
+}
